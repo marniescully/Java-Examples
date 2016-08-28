@@ -1,0 +1,27 @@
+aws sqs create-queue --queue-name MyQueue
+
+aws sns create-topic --name AS_Test
+
+aws elb create-load-balancer --load-balancer-name LB --listeners "Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80" --subnets subnet-0bece57c --security-groups sg-52f9ed35
+
+
+aws autoscaling create-launch-configuration --launch-configuration-name lc --key-name CliKeyPair --image-id ami-2ec7bf44 --instance-type t1.micro -–security-groups sg-52f9ed35
+
+
+aws autoscaling create-auto-scaling-group -–auto-scaling-group-name asg --launch-configuration-name lc --availability-zones us-east-1d us-east-1b --min-size 1 --max-size 10 –-desired-capacity 4  --load-balancer-names LB --health-check-type ELB -–health-ckeck-grace-period 500
+
+
+aws autoscaling put-scaling-policy --auto-scaling-group-name asg --policy-name scale-up --scaling-adjustment 1 —-adjustment-type ChangeInCapacity --cooldown 50
+
+aws autoscaling put-scaling-policy --auto-scaling-group-name asg --policy-name scale-dn --scaling-adjustment -1 —-adjustment-type ChangeInCapacity --cooldown 50
+
+queue MyQueue
+launch configuration lc
+autoscaling group name asg
+ami-62611908
+Load Balancer LB
+
+
+aws autoscaling put-scheduled-update-group-action --scheduled-action-name SchedScaleUp --auto-scaling-group-name asg_2 --start-time "2015-11-12T21:00:00Z" --desired-capacity 3
+
+aws autoscaling put-scheduled-update-group-action --scheduled-action-name SchedScaleDown --auto-scaling-group-name asg_2 --start-time "2015-11-12T22:00:00Z" --desired-capacity 1 
